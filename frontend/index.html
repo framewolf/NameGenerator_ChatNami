@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Name Generator Chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .chat-container {
+      max-width: 500px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 1rem;
+    }
+
+    .chat-message {
+      margin-bottom: 1rem;
+    }
+
+    .chat-message-bubble {
+      background-color: #f1f0f0;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      display: inline-block;
+    }
+
+    .chat-input {
+      margin-top: 1rem;
+    }
+
+    .chat-input-text {
+      border-radius: 20px;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+    }
+
+    .chat-input-button {
+      border-radius: 20px;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+
+    .intro-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-container img {
+      width: 50%;
+      /*반응형*/
+      min-width: 300px;
+      /*최소 크기*/
+    }
+
+    .button {
+      border-radius: 25px;
+      width: 104px;
+      height: 40px;
+      background-color: #eee;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 1px 4px 0 rgb(0, 0, 0, 0.5);
+      margin: 40px 10px;
+    }
+
+    .button:active {
+      box-shadow: 1px 1px 0 rgb(0, 0, 0, 0.5);
+      position: relative;
+      top: 2px;
+    }
+
+    .button:hover {
+      background-color: #0B888C;
+    }
+
+    #loading-screen {
+      font-size: 25px;
+    }
+
+    .kakao-ad {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      min-width: 350px;
+      min-height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 인트로 컨테이너 -->
+  <div class="intro-container">
+    <h1>변수/함수 이름을 지어드립니다.</h1>
+    <img src="wolf.png" alt="chatnami">
+
+    <div class="button-container">
+      <button class="button" id="variable-button">변수</button>
+      <button class="button" id="function-button">함수</button>
+    </div>
+    <div class="output-container">
+      <p id="output-text"></p>
+    </div>
+
+    <input id="purpose" text="text">
+
+    <button onclick="start();spinner()">이름짓기</button>
+  </div>
+  <!-- 챗 컨테이너 -->
+  <div class="chat-container" style="display: none">
+    <h1>Name Generator Chat</h1>
+    <div id="chat-messages"></div>
+    <div id="loading-screen" style="display: none">
+      <div class="spinner"><i class="fas fa-spinner fa-spin"></i></div>
+      <div class="loading-text">Loading...</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chat-input-text" placeholder="메시지를 입력하세요" />
+      <button id="chat-input-button" onclick="spinner()">전송</button>
+    </div>
+  </div>
+  <div class="kakao-ad">
+    <ins class="kakao_ad_area" style="display:none;" data-ad-unit="DAN-T5CACsbYyNzFofGu" data-ad-width="320"
+      data-ad-height="100"></ins>
+    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+  </div>
+  <script>
+
+    //인트로 페이지 부분
+    const variableButton = document.getElementById("variable-button");
+    const functionButton = document.getElementById("function-button");
+    const outputText = document.getElementById("output-text");
+    let object = ''
+    let purpose = ''
+
+    variableButton.addEventListener("click", () => {
+      outputText.innerText = "변수의 용도입력(ex.학생성적을 저장):";
+      object = "변수"
+    });
+
+    functionButton.addEventListener("click", () => {
+      outputText.innerText = "함수의 용도입력(ex.학생성적을 정렬):";
+      object = "함수"
+    });
+
+    function spinner() {
+      document.getElementById("loading-screen").style.display = "block"
+    }
+
+    function start() {
+      // const object = document.querySelector('#object').value;
+      const purpose = document.getElementById('purpose').value;
+      if (object === '') {
+        alert('변수/함수를 선택해주세요.')
+        return;
+      }
+      if (purpose === '') {
+        alert('변수/함수의 용도를 입력해주세요.')
+        return;
+      }
+
+      // userMessages.push(object);
+      userMessages.push(purpose + "의 역할을 하는 " + object + "의 이름을 생성해줘");
+      generateName()
+      document.querySelector('.intro-container').style.display = 'none';
+      document.querySelector('.chat-container').style.display = 'block';
+    }
+
+    // 채팅 시스템 부분
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInputText = document.getElementById('chat-input-text');
+    const chatInputButton = document.getElementById('chat-input-button');
+    let userMessages = [];
+    let assistantMessages = [];
+
+    chatInputButton.addEventListener('click', generateName);
+
+    async function generateName() {
+      try {
+        const messageBubble = document.createElement("div");
+        messageBubble.classList.add("chat-message");
+        messageBubble.innerHTML = `
+            <div class="chat-message-bubble">${chatInputText.value}</div>
+          `;
+        chatMessages.appendChild(messageBubble);
+        userMessages.push(chatInputText.value);
+        chatInputText.value = "";
+
+        const url = "https://awf96f13o2.execute-api.ap-northeast-2.amazonaws.com/prod/nameGenerate";
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            object: object,
+            purpose: purpose,
+            userMessages: userMessages,
+            assistantMessages: assistantMessages,
+          }),
+        });
+
+        const data = await response.json();
+        document.getElementById("loading-screen").style.display = "none"
+        const assistantMessage = data.assistant;
+        assistantMessages.push(data.assistant);
+
+        // create a new message bubble element for the assistant's response
+        const assistantMessageBubble = document.createElement("div");
+        assistantMessageBubble.classList.add("chat-message");
+        assistantMessageBubble.innerHTML = `
+            <div class="chat-message-bubble">${assistantMessage}</div>
+          `;
+        chatMessages.appendChild(assistantMessageBubble);
+
+      } catch (error) {
+        console.error(error);
+        const errorMessage = "Error occurred. Please try again.";
+        const messageBubble = document.createElement("div");
+        messageBubble.classList.add("chat-message");
+        messageBubble.innerHTML = `
+            <div class="chat-message-bubble">${errorMessage}</div>
+          `;
+        chatMessages.appendChild(messageBubble);
+      }
+    }
+  </script>
+</body>
+
+</html>
