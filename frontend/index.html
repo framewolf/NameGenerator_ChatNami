@@ -159,7 +159,6 @@
     }
 
     function start() {
-      // const object = document.querySelector('#object').value;
       const purpose = document.getElementById('purpose').value;
       if (object === '') {
         alert('변수/함수를 선택해주세요.')
@@ -170,7 +169,6 @@
         return;
       }
 
-      // userMessages.push(object);
       userMessages.push(purpose + "의 역할을 하는 " + object + "의 이름을 생성해줘");
       generateName()
       document.querySelector('.intro-container').style.display = 'none';
@@ -216,7 +214,6 @@
         const assistantMessage = data.assistant;
         assistantMessages.push(data.assistant);
 
-        // create a new message bubble element for the assistant's response
         const assistantMessageBubble = document.createElement("div");
         assistantMessageBubble.classList.add("chat-message");
         assistantMessageBubble.innerHTML = `
