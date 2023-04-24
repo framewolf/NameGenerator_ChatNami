@@ -12,17 +12,14 @@ const openai = new OpenAIApi(configuration);
 
 //CORS 이슈 해결
 let corsOptions = {
-  // 오리진에서 받는 요청만 받음
   origin: 'https://chatnami.pages.dev',
   credentials: true
 }
 app.use(cors(corsOptions));
 
-//POST요청 받을 수 있게 만듦
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.json()) 
+app.use(express.urlencoded({ extended: true })) 
 
-// POST method route
 app.post('/nameGenerate', async function (req, res) {
   let { object, purpose, userMessages, assistantMessages } = req.body;
   console.log(userMessages);
@@ -36,10 +33,6 @@ app.post('/nameGenerate', async function (req, res) {
   while (userMessages.length != 0 || assistantMessages.length != 0) {
     if (userMessages.lengt != 0) {
       messages.push(
-        //자바스크립트에서 pop()은 오른쪽에서 제거, shift는 왼쪽에서 제거임
-        //정규표현식 이용하여 개행문자 등을 날림
-        //숫자 등이 들어가면 깨지는 경우가 있어서 string으로 감싸줌
-        //json은 문자에 다 ""
         JSON.parse('{"role": "user", "content": "' + String(userMessages.shift()).replace(/\n/g, "") + '"}')
       )
     }
