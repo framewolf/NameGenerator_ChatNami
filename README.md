@@ -1,7 +1,7 @@
 # NameGenerator_ChatNami
 https://chatnami.pages.dev/
 
-simple web that generates name of variable and fuction using open-ai.
+simple web that generates creative names of variable and fuction using open-ai.
 
 "ChatNami" will recommend a name that suits your purpose.
 ***
